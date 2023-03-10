@@ -1,3 +1,5 @@
+import { Comment } from './../models/Comment';
+import { LikeOrDislikePostInputDTO, CommentPostInputDTO } from './../dtos/userDTO';
 import { TokenManager } from './../services/TokenManager';
 import { PostDatabase } from './../database/PostDatabase';
 import { NotFoundError } from './../errors/NotFoundError';
@@ -5,7 +7,7 @@ import { IdGenerator } from './../services/IdGenerator';
 import { BadRequestError } from './../errors/BadRequestError';
 import { GetPostsInput, GetPostsOutput, CreatePostInput, CreatePostOutput, EditPostInput, EditPostOutput, DeletePostInput, DeletePostOutput } from './../dtos/postDTO';
 import { Post } from './../models/Post';
-import { PostDB, USER_ROLES } from './../types';
+import { PostDB, USER_ROLES, LikeDislikeDB, PostWithCreatorDB, POST_LIKE } from './../types';
 
 export class PostBusiness {
     constructor(
@@ -15,14 +17,10 @@ export class PostBusiness {
     ) {}
 
     public getPosts = async (input: GetPostsInput): Promise<GetPostsOutput> => {
-        const { q, token } = input
-
-        if (typeof q !== "string" && q !== undefined) {
-            throw new BadRequestError("'q' deve ser string ou undefined")
-        }
+        const { token } = input        
 
         if (typeof token !== "string"){
-            throw new BadRequestError("'token' inválido")
+            throw new BadRequestError("'token' deve ser string")
         }
 
         const payload = this.tokenManager.getPayload(token)
@@ -31,17 +29,18 @@ export class PostBusiness {
             throw new BadRequestError("'token' inválido")
         }
 
-        const postsDB = await this.postDatabase.findPosts(q)
+        const postsWithCreatorDB: PostWithCreatorDB[] = await this.postDatabase.getPostsWithCreators()
 
-        const posts = postsDB.map((postDB) => {
+        const posts = postsWithCreatorDB.map((postWithCreatorDB) => {
             const post = new Post(
-                postDB.id,
-                postDB.creator_id,
-                postDB.content,
-                postDB.likes,
-                postDB.dislikes,
-                postDB.created_at,
-                postDB.updated_at
+                postWithCreatorDB.id,
+                postWithCreatorDB.creator_id,
+                postWithCreatorDB.content,
+                postWithCreatorDB.likes,
+                postWithCreatorDB.dislikes,
+                postWithCreatorDB.created_at,
+                postWithCreatorDB.updated_at,                
+                postWithCreatorDB.creator_name
             )
 
             return post.toBusinessModel()
@@ -82,7 +81,8 @@ export class PostBusiness {
             0,
             0,            
             new Date().toISOString(),
-            new Date().toISOString()
+            new Date().toISOString(),
+            payload.name
         )
 
         const newPostDB = newPost.toDBModel()
@@ -134,7 +134,8 @@ export class PostBusiness {
             postDB.likes,
             postDB.dislikes,
             postDB.created_at,
-            postDB.updated_at
+            postDB.updated_at,
+            payload.name
         )
 
         post.setContent(newContent)
@@ -149,7 +150,7 @@ export class PostBusiness {
             updated_at: post.getUpdatedAt()
         }
 
-        await this.postDatabase.updatePost(updatedPostDB)
+        await this.postDatabase.updatePost(idToEdit, updatedPostDB)
 
         const output: EditPostOutput = {
             message: "Post editado com sucesso",
@@ -191,5 +192,119 @@ export class PostBusiness {
         }
 
         return output
+    }
+
+    public likeOrDislikePost = async (input: LikeOrDislikePostInputDTO): Promise <void> => {
+        const { idToLikeOrDislike, token, like } = input
+
+        if (typeof token !== "string"){
+            throw new BadRequestError("'token' inválido. Deve ser uma string")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if (payload === null){
+            throw new BadRequestError("'token' inválido")
+        }
+
+        if (typeof like !== "boolean") {
+            throw new BadRequestError("'like' deve ser boolean")
+        }
+
+        const postWithCreatorDB = await this.postDatabase
+            .findPostWithCreatorById(idToLikeOrDislike)
+        
+        if (!postWithCreatorDB) {
+            throw new NotFoundError("'id' não encontrado")
+        }
+
+        const userId = payload.id
+        const likeSQLite = like ? 1 : 0
+
+        const likeDislikeDB: LikeDislikeDB = {
+            user_id: userId,
+            post_id: postWithCreatorDB.id,
+            like: likeSQLite
+        }
+
+        const post = new Post(
+            postWithCreatorDB.id,
+            postWithCreatorDB.creator_id,
+            postWithCreatorDB.content,
+            postWithCreatorDB.likes,
+            postWithCreatorDB.dislikes,
+            postWithCreatorDB.created_at,
+            postWithCreatorDB.updated_at,
+            postWithCreatorDB.creator_name
+        )
+
+        const likeDislikeExists = await this.postDatabase.findLikeDislike(likeDislikeDB)
+
+        if(likeDislikeExists === POST_LIKE.ALREADY_LIKED) {
+            if (like) {
+                await this.postDatabase.removeLikeDislike(likeDislikeDB)
+                post.removeLike()
+            } else {
+                await this.postDatabase.updateLikeDislike(likeDislikeDB)
+                post.removeLike()
+                post.addDislike()
+            }
+
+        } else if (likeDislikeExists === POST_LIKE.ALREADY_DISLIKED) {
+            if (like) {
+                await this.postDatabase.updateLikeDislike(likeDislikeDB)
+                post.removeDislike()
+                post.addLike()
+            } else {
+                await this.postDatabase.removeLikeDislike(likeDislikeDB)
+                post.removeDislike()
+            }
+
+        } else {
+            await this.postDatabase.likeOrDislikePost(likeDislikeDB)
+            
+            like ? post.addLike() : post.addDislike()
+        }
+
+        const updatedPostDB = post.toDBModel()
+
+        await this.postDatabase.updatePost(idToLikeOrDislike, updatedPostDB)
+    }
+
+    public addCommentToPost = async (input: CommentPostInputDTO): Promise <void> => {
+        const { idToAddComment, token, content } = input
+
+        if (typeof token !== "string"){
+            throw new BadRequestError("'token' inválido. Deve ser uma string")
+        }
+
+        const payload = this.tokenManager.getPayload(token)
+
+        if (payload === null){
+            throw new BadRequestError("'token' inválido")
+        }
+
+        if (typeof content !== "string"){
+            throw new BadRequestError("'content' inválido. Deve ser uma string")
+        }
+
+        if (content.length <= 0){
+            throw new BadRequestError("'content' deve possuir pelo menos um caractere")
+        }
+
+        const postWithCreatorDB = await this.postDatabase
+            .findPostWithCreatorById(idToAddComment)
+        
+        if (!postWithCreatorDB) {
+            throw new NotFoundError("'id' não encontrado")
+        }        
+
+        const comment = new Comment(
+            payload.id, 
+            postWithCreatorDB.id,
+            content
+        ).toDBModel()
+
+        await this.postDatabase.commentPost(comment)
     }
 }

@@ -18,3 +18,15 @@ export interface LoginInputDTO {
 export interface LoginOutputDTO {
     token: string
 }
+
+export interface LikeOrDislikePostInputDTO {
+    idToLikeOrDislike: string,
+    token: string | undefined,
+    like: unknown
+}
+
+export interface CommentPostInputDTO {
+    idToAddComment: string,
+    token: string | undefined,
+    content: unknown
+}

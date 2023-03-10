@@ -20,12 +20,16 @@ CREATE TABLE posts (
     FOREIGN KEY (creator_id) REFERENCES users(id)
 );
 
-CREATE TABLE likes_dislikes (
+CREATE TABLE likes_dislikes_post (
     user_id TEXT NOT NULL,
     post_id TEXT NOT NULL,
     like INTEGER,
-    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
     FOREIGN KEY (post_id) REFERENCES posts(id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
 );
 
 CREATE TABLE comments (
