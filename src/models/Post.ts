@@ -8,7 +8,8 @@ export class Post {
         private likes: number,
         private dislikes: number,
         private created_at: string,
-        private updated_at: string
+        private updated_at: string,        
+        private creator_name: string
     ) {}
 
     public getId = (): string => {
@@ -38,12 +39,24 @@ export class Post {
     public setLikes = (newLikes: number) => {
         this.likes = newLikes
     }
+    public addLike() {
+        this.likes += 1
+    }
+    public removeLike() {
+        this.likes -= 1
+    }
 
     public getDislikes = (): number => {
         return this.dislikes
     }
     public setDislikes = (newDislikes: number) => {
         this.dislikes = newDislikes
+    }
+    public addDislike() {
+        this.dislikes += 1
+    }
+    public removeDislike() {
+        this.dislikes -= 1
     }
 
     public getCreatedAt = (): string => {
@@ -58,6 +71,13 @@ export class Post {
     }
     public setUpdatedAt = (newUpdatedAt: string) => {
         this.updated_at = newUpdatedAt
+    }
+
+    public getCreatorName(): string {
+        return this.creator_name
+    }
+    public setCreatorName(newCreatorName: string): void {
+        this.creator_name = newCreatorName
     }
 
     public toDBModel(): PostDB {

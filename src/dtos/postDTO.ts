@@ -1,15 +1,14 @@
 import { PostModel } from './../types';
 
-export interface GetPostsInput {
-    q: string,
-    token: string | undefined
+export interface GetPostsInput {    
+    token: unknown
 }
 
 export type GetPostsOutput = PostModel[]
 
 export interface CreatePostInput {
     content: unknown,
-    token: string | undefined
+    token: unknown
 }
 
 export interface CreatePostOutput {

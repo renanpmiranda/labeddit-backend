@@ -47,14 +47,29 @@ export interface PostModel {
     updatedAt: string
 }
 
-export interface LikeDB {
+export interface PostWithCreatorDB extends PostDB {
+    creator_name: string
+}
+
+export interface LikeDislikeDB {
     user_id: string,
     post_id: string,
     like: number
 }
 
-export interface LikeModel {
-    userId: string,
+export enum POST_LIKE {
+    ALREADY_LIKED = "ALREADY LIKED",
+    ALREADY_DISLIKED = "ALREADY DISLIKED"
+}
+
+export interface CommentDB {
+    user_id: string, 
+    post_id: string,
+    content: string
+}
+
+export interface CommentModel {
+    userId: string, 
     postId: string,
-    like: number
+    content: string
 }

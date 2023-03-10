@@ -1,4 +1,3 @@
-import { likeRouter } from './router/likeRouter';
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
@@ -18,4 +17,3 @@ app.listen(Number(process.env.PORT), () => {
 
 app.use("/users", userRouter)
 app.use("/posts", postRouter)
-app.use("/likes", likeRouter)
