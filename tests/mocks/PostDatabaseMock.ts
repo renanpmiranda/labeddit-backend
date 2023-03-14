@@ -10,7 +10,7 @@ export class PostDatabaseMock extends BaseDatabase {
         return [
             {
                 id: "postId-mock1",
-                creator_id: "creatorId-mock",
+                creator_id: "creatorId-mock1",
                 content: "Post de Teste 1",
                 likes: 1,
                 dislikes: 0,
@@ -20,7 +20,7 @@ export class PostDatabaseMock extends BaseDatabase {
             },
             {
                 id: "postId-mock2",
-                creator_id: "creatorId-mock",
+                creator_id: "creatorId-mock2",
                 content: "Post de Teste 2",
                 likes: 3,
                 dislikes: 2,
@@ -40,7 +40,7 @@ export class PostDatabaseMock extends BaseDatabase {
             case "postId-mock1":
                 return {
                     id: "postId-mock1",
-                    creator_id: "creatorId-mock",
+                    creator_id: "creatorId-mock1",
                     content: "Post de Teste 1",
                     likes: 1,
                     dislikes: 0,
@@ -50,7 +50,7 @@ export class PostDatabaseMock extends BaseDatabase {
             case "postId-mock2":
                 return {
                     id: "postId-mock2",
-                    creator_id: "creatorId-mock",
+                    creator_id: "creatorId-mock2",
                     content: "Post de Teste 2",
                     likes: 3,
                     dislikes: 2,
@@ -75,7 +75,7 @@ export class PostDatabaseMock extends BaseDatabase {
             case "postId-mock1":
                 return {
                     id: "postId-mock1",
-                    creator_id: "creatorId-mock",
+                    creator_id: "creatorId-mock1",
                     content: "Post de Teste 1",
                     likes: 1,
                     dislikes: 0,
@@ -86,7 +86,7 @@ export class PostDatabaseMock extends BaseDatabase {
             case "postId-mock2":
                 return {
                     id: "postId-mock2",
-                    creator_id: "creatorId-mock",
+                    creator_id: "creatorId-mock2",
                     content: "Post de Teste 2",
                     likes: 3,
                     dislikes: 2,

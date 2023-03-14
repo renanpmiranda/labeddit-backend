@@ -21,12 +21,12 @@ export interface LoginOutputDTO {
 
 export interface LikeOrDislikePostInputDTO {
     idToLikeOrDislike: string,
-    token: string | undefined,
+    token: unknown,
     like: unknown
 }
 
 export interface CommentPostInputDTO {
     idToAddComment: string,
-    token: string | undefined,
+    token: unknown,
     content: unknown
 }

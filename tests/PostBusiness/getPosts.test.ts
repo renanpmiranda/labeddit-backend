@@ -21,7 +21,7 @@ describe("getPosts", () => {
         expect(response).toHaveLength(2)
         expect(response).toContainEqual({
             id: "postId-mock1",
-            creatorId: "creatorId-mock",
+            creatorId: "creatorId-mock1",
             content: "Post de Teste 1",
             likes: 1,
             dislikes: 0,
