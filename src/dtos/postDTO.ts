@@ -19,7 +19,7 @@ export interface CreatePostOutput {
 export interface EditPostInput {
     idToEdit: string,
     newContent: unknown,
-    token: string | undefined
+    token: unknown
 }
 
 export interface EditPostOutput {
@@ -29,7 +29,7 @@ export interface EditPostOutput {
 
 export interface DeletePostInput {
     idToDelete: string,
-    token: string | undefined
+    token: unknown
 }
 
 export interface DeletePostOutput {
