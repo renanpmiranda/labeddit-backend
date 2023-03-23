@@ -88,7 +88,8 @@ export class Post {
             likes: this.likes,
             dislikes: this.dislikes,
             created_at: this.created_at,
-            updated_at: this.updated_at
+            updated_at: this.updated_at,
+            creator_name: this.creator_name
         }
     }
 
@@ -100,7 +101,8 @@ export class Post {
             likes: this.likes,
             dislikes: this.dislikes,
             createdAt: this.created_at,
-            updatedAt: this.updated_at
+            updatedAt: this.updated_at,
+            creatorName: this.creator_name
         }
     }
 }

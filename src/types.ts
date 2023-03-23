@@ -34,7 +34,8 @@ export interface PostDB {
     likes: number,
     dislikes: number,
     created_at: string,
-    updated_at: string
+    updated_at: string,
+    creator_name: string
 }
 
 export interface PostModel {
@@ -44,7 +45,8 @@ export interface PostModel {
     likes: number,
     dislikes: number,
     createdAt: string,
-    updatedAt: string
+    updatedAt: string,
+    creatorName: string
 }
 
 export interface PostWithCreatorDB extends PostDB {

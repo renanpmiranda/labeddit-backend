@@ -147,7 +147,8 @@ export class PostBusiness {
             likes: post.getLikes(),
             dislikes: post.getDislikes(),
             created_at: post.getCreatedAt(),
-            updated_at: post.getUpdatedAt()
+            updated_at: post.getUpdatedAt(),
+            creator_name: post.getCreatorName()
         }
 
         await this.postDatabase.updatePost(idToEdit, updatedPostDB)
