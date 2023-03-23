@@ -45,7 +45,8 @@ export class PostDatabaseMock extends BaseDatabase {
                     likes: 1,
                     dislikes: 0,
                     created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()                   
+                    updated_at: new Date().toISOString(),
+                    creator_name: "Normal Mock"                   
                 }
             case "postId-mock2":
                 return {
@@ -55,7 +56,8 @@ export class PostDatabaseMock extends BaseDatabase {
                     likes: 3,
                     dislikes: 2,
                     created_at: new Date().toISOString(),
-                    updated_at: new Date().toISOString()                    
+                    updated_at: new Date().toISOString(),
+                    creator_name: "Admin Mock"                    
                 }
             default:
                 return undefined

@@ -26,7 +26,8 @@ describe("getPosts", () => {
             likes: 1,
             dislikes: 0,
             createdAt: expect.any(String),
-            updatedAt: expect.any(String)                                      
+            updatedAt: expect.any(String),
+            creatorName: "Normal Mock"                                      
         })       
     })
 
